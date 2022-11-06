@@ -235,7 +235,7 @@ function validation() {
                 .then((res) => { redirect(res.orderId) })
         }
         else {
-            console.log('Verifier les champs');
+            alert('vérifiez les champs');
         }
     })
 }
