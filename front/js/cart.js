@@ -1,4 +1,4 @@
-// items model
+// =================== ITEMS MODELS ====================
 class Item {
     constructor(color,
         imageUrl,
@@ -24,7 +24,7 @@ class Item {
     }
 }
 
-// shopping cart model with its properties and methods
+// ============= SHOPPING CART MODEL WITH ITS METHODS AND PROPERTIES ===========
 class Cart {
 
     itemOption = JSON.parse(localStorage.getItem('option'));
@@ -32,17 +32,18 @@ class Cart {
     items = [];
     cartPrice = []; //Total cart price
 
-    // method to items quantity
+    // =================== METHOD TO UPDATE ITEM QUANTITY ====================
     qtyUpdate(id, color, qty) {
         for (let i in this.items) {
             if (this.items[i].id == id && this.items[i].color == color) {
                 this.items[i].totalPrice = qty * this.items[i].price;
+                this.items[i].quant = qty;
                 console.log(this.items[i].totalPrice)
             }
         }
     }
 
-    // method to delete items   
+    // =================== METHOD TO DELETE ITEM ====================   
     removeItem(itemId, productColor) {
         console.log(itemId)
         console.log(productColor)
@@ -52,14 +53,14 @@ class Cart {
         window.location.reload();
     }
 
-    // method to get all the item price array in the cart (to calculate its total price)  
+    // ========== METHOD TO GET ALL ITEMS PRICES (ARRAY) IN THE CART TO CALCULATE TOTAL PRICE =========== 
     setCartPrice(arr) {
         for (let i in arr) { this.cartPrice.push(arr[i].totalPrice) }
 
         return this.cartPrice;
     }
 
-    // method to get data from API  
+    // =================== METHOD TO GET DATA FROM API ==================== 
     getItemData(url) {
         return fetch(url)
             .then(function (rep) {
@@ -67,9 +68,9 @@ class Cart {
             });
     }
 
-    //methode to create items objet  
+    // =================== METHOD TO CREATE ITEM OBJECTS ====================  
     async creatItem(item) {
-        const res = await this.getItemData(cart.itemsListUrl + item.id);
+        const res = await this.getItemData(this.itemsListUrl + item.id);
         const newItem = new Item(
             item.itemColor,
             res.imageUrl,
@@ -83,6 +84,7 @@ class Cart {
         );
         return newItem;
     }
+    // =================== METHOD TO ADD ITEMS IN CART ARRAY ====================
     async creatItems() {
         for (let index in this.itemOption) {
             const item = await this.creatItem(this.itemOption[index]);
@@ -93,17 +95,22 @@ class Cart {
 const cart = new Cart;
 let cartItems = cart.items;
 
-// display total cart price
+// =================== DISPLAY TOTAL CART PRICE ====================
 function displayPrice(arr) {
     const itemPriceLt = [];
-    for (let i in arr) { itemPriceLt.push(arr[i].totalPrice) }
+    let qts = 0;
+    for (let i in arr) {
+        itemPriceLt.push(arr[i].totalPrice);
+        qts += parseInt(arr[i].quant);
+    }
+    document.getElementById('totalQuantity').innerHTML = qts;
     document.getElementById('totalPrice').innerHTML = itemPriceLt.reduce((acc, prix) => {
         return acc + prix;
 
     }, 0);
 }
 
-// display items in the cart and activate differents events listner functions
+// ======= DISPLAY ITEMS IN THE CART AND ACTIVATE DIFFERENTS EVENTS LISTNER ========
 async function displayCart() {
     await cart.creatItems();
     const res = cart.items;
@@ -140,7 +147,7 @@ async function displayCart() {
     delet()
 }
 
-// edit items quantity
+// =================== EDIT ITEM QUANTITY ====================
 function editQty() {
     const qtyInput = document.querySelectorAll('.itemQuantity');
     for (i = 0; i < qtyInput.length; i++) {
@@ -157,7 +164,7 @@ function editQty() {
 
 }
 
-// delete item
+// =================== DELETE ITEM ====================
 function delet() {
     const deleteButtons = document.querySelectorAll('.deleteItem');
     for (i = 0; i < deleteButtons.length; i++) {
@@ -170,7 +177,7 @@ function delet() {
     }
 }
 
-// user contact form iput validator
+// =================== FORM VALIDATOR ====================
 function contactEventConstructor(id, regex, errorMsg) {
     document.getElementById(id).addEventListener('input', (event) => {
         regex.test(event.target.value) ?
@@ -179,17 +186,17 @@ function contactEventConstructor(id, regex, errorMsg) {
     })
 }
 
-// redirection to confirmation page
+// =================== REDIRECTION TO CONFIRMATION PAGE =================
 function redirect(orderId) {
     location.href = `../html/confirmation.html?=${orderId}`;
 }
 
-// all data validation and send to API
+// =================== SEND DATA TO API  ====================
 function validation() {
 
     contactEventConstructor('firstName', /^[a-zéèçïê' ]{2,25}$/i, 'prenom invalide');
     contactEventConstructor('lastName', /^[a-zéèçïê' ]{2,25}$/i, 'Nom invalide');
-    contactEventConstructor('address', /^[0-9]{1,10} [a-z. -]{2,} [0-9]{1,7}$/i, 'Adresse invalide. Ex: 7 place de la Barrasse 13011');
+    contactEventConstructor('address', /^\d+ [\w.' -]+ \d+$/i, 'Adresse invalide. Ex: 7 place de la Barrasse 13011');
     contactEventConstructor('city', /^[a-zéèçïê' -]{2,50}$/i, 'Ville incorrecte');
     contactEventConstructor('email', /^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/i, 'Ville incorrecte');
 
@@ -199,7 +206,7 @@ function validation() {
 
         const firstName = /^[a-zéèçïê' ]{2,25}$/i.test(document.getElementById('firstName').value);
         const lastName = /^[a-zéèçïê' ]{2,25}$/i.test(document.getElementById('lastName').value);
-        const adresse = /^[0-9]{1,10} [a-z .-]{2,} [0-9]{1,7}$/i.test(document.getElementById('address').value)
+        const adresse = /^\d+ [\w.' -]+ \d+$/i.test(document.getElementById('address').value)
         const city = /^[a-zéèçïê' -]{2,50}$/i.test(document.getElementById('city').value);
         const email = /^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/i.test(document.getElementById('email').value);
 

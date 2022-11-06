@@ -1,10 +1,8 @@
 const link = window.location.search;
-const objetUrl = `http://localhost:3000/api/products/${link.replace('?', '')
-    .replace('id', '')
-    .replace('=', '')
-    }`;
+const param = new URLSearchParams(link).get("id");
+const objetUrl = `http://localhost:3000/api/products/${param}`;
 
-// get item from API
+// =================== GET ITEM FROM API ====================
 function getItemData(url) {
     return fetch(url)
         .then(function (rep) {
@@ -12,7 +10,7 @@ function getItemData(url) {
         });
 }
 
-// creation of color selector iput
+// =================== CREATION OF COLOR SELECTOR INPUT ====================
 function setColorsOptionsIputs(colorArray) {
     for (i in colorArray) {
         const option = document.createElement('option');
@@ -22,19 +20,19 @@ function setColorsOptionsIputs(colorArray) {
     }
 }
 
-// check of local storage add add of item option
+// =================== CHECK OF LOCAL STORAGE AND ADD ITEM OPTION ====================
 function addItem(itemOjet) {
     const button = document.getElementById('addToCart');
     button.addEventListener('click', () => {
 
         if (document.getElementById('colors').value == '') {
-            document.querySelector('.item__content__settings__color > label').style.color = 'red';
+            alert("Couleur obligatoir")
         }
 
         else if (
             document.getElementById('quantity').value <= 0 ||
             document.getElementById('quantity').value > 100) {
-            document.querySelector('.item__content__settings__quantity > label').style.color = 'red';
+            alert("Quantité incorrecte (doit être supérieur à 0)")
         }
 
         else {
@@ -52,12 +50,13 @@ function addItem(itemOjet) {
                     }) :
                     saveOption.push(item);
                 localStorage.setItem('option', JSON.stringify(saveOption));
+                alert('article ajouté');
             }
             else {
                 saveOption = [];
                 saveOption.push(item);
                 localStorage.setItem('option', JSON.stringify(saveOption));
-                console.log(saveOption);
+                alert('article ajouté');
             }
         }
 
@@ -65,7 +64,7 @@ function addItem(itemOjet) {
     })
 }
 
-// display item specition
+// =================== DISPLAY ITEM DETAILS ====================
 function displayItem() {
     getItemData(objetUrl)
         .then(function (itemObjet) {

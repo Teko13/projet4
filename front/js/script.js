@@ -1,12 +1,14 @@
 const itemsListUrl = 'http://localhost:3000/api/products/';
 
-// get data from API
+// =================== GET DATA FROM API ====================
 function getData(url) {
     return fetch(url)
         .then(function (res) {
             return res.json();
         })
 }
+
+// =================== DISPLAY ALL ITEMS ====================
 function displayDatas() {
     getData(itemsListUrl)
         .then(function (datas) {
