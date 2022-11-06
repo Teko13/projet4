@@ -113,8 +113,17 @@ function displayPrice(arr) {
 // ======= DISPLAY ITEMS IN THE CART AND ACTIVATE DIFFERENTS EVENTS LISTNER ========
 async function displayCart() {
     await cart.creatItems();
-    const res = cart.items;
-    console.log(res);
+    const res = cart.items.sort((a, b) => {
+        let aCode = 0;
+        let bCode = 0;
+        for (let i = 0; i < a.name.length; i++) {
+            aCode += a.name.charCodeAt(i)
+        };
+        for (let i = 0; i < b.name.length; i++) {
+            bCode += b.name.charCodeAt(i)
+        };
+        return aCode - bCode
+    });
     for (let i in res) {
         const article = document.createElement('article');
         document.getElementById('cart__items').appendChild(article);
@@ -198,7 +207,7 @@ function validation() {
     contactEventConstructor('lastName', /^[a-zéèçïê' ]{2,25}$/i, 'Nom invalide');
     contactEventConstructor('address', /^\d+ [\w.' -]+ \d+$/i, 'Adresse invalide. Ex: 7 place de la Barrasse 13011');
     contactEventConstructor('city', /^[a-zéèçïê' -]{2,50}$/i, 'Ville incorrecte');
-    contactEventConstructor('email', /^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/i, 'Ville incorrecte');
+    contactEventConstructor('email', /^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$/i, 'Email incorrecte');
 
     const submit = document.getElementById('order');
     submit.addEventListener('click', (event) => {
@@ -235,7 +244,7 @@ function validation() {
                 .then((res) => { redirect(res.orderId) })
         }
         else {
-            alert('vérifiez les champs');
+            alert('champs mal renseigner')
         }
     })
 }
